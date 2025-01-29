@@ -1,0 +1,17 @@
+CompileFlags:
+  Add: [
+    "-ggdb",
+    "-O0",
+    "-Iinclude",
+    "-std=c++23",
+    "-lGL",
+    "-lX11",
+    "-lglfw",
+    "-lXrandr",
+    "-lpthread",
+    "-lXi",
+    "-ldl",
+  ]
+  Compiler: clang++
+Diagnostics:
+  UnusedIncludes: Strict
