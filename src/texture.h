@@ -36,6 +36,8 @@ class Texture2D {
       case (GL_NEAREST + 1) ^ GL_NEAREST:
         mipmapFilter = GL_NEAREST_MIPMAP_NEAREST;
         break;
+      default:
+       throw std::runtime_error("Invalid filterMode");
     }
 
     glGenTextures(1, &m_id);

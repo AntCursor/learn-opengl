@@ -1,5 +1,8 @@
 // clang-format off
 #include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <GLFW/glfw3.h>
 #include <cmath>
 #include <iostream>
@@ -80,19 +83,28 @@ int main() {
   shaderProgram.setUInt("oTexture2", 1);
 
   float mix{0.2f};
+  shaderProgram.setUFloat("oMix", mix);
+
+  int transfUni{glGetUniformLocation(shaderProgram.id(), "transformation")};
+
   while (!glfwWindowShouldClose(mainWindow)) {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    if (glfwGetKey(mainWindow, GLFW_KEY_UP) == GLFW_PRESS) {
-      mix += 0.01f;
-    }
-    if (glfwGetKey(mainWindow, GLFW_KEY_DOWN) == GLFW_PRESS) {
-      mix -= 0.01f;
-    }
-    shaderProgram.setUFloat("oMix", mix);
-
     glBindVertexArray(VAO);
+
+    glm::mat4 transf{glm::mat4(1.f)};
+    transf = glm::translate(transf, glm::vec3(0.5f, -0.5f, 0.f));
+    transf =
+        glm::rotate(transf, (float)glfwGetTime(), glm::vec3(0.f, 0.f, 1.f));
+    glUniformMatrix4fv(transfUni, 1, GL_FALSE, glm::value_ptr(transf));
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    transf = glm::mat4(1.f);
+    transf = glm::translate(transf, glm::vec3(-0.5f, 0.5f, 0.f));
+    float scale{(sin((float)glfwGetTime())+1.f) / 2};
+    transf = glm::scale(transf, glm::vec3(scale, scale, 1.f));
+    glUniformMatrix4fv(transfUni, 1, GL_FALSE, glm::value_ptr(transf));
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     glUniform4f(colorLoc, 1.f, 1.f, 1.f, 1.0f);

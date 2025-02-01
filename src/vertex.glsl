@@ -4,8 +4,10 @@ layout(location = 1) in vec2 aTexCoords;
 
 out vec2 oTexCoords;
 
+uniform mat4 transformation;
+
 void main()
 {
-    gl_Position = vec4(aPos, 1.0); // see how we directly give a vec3 to vec4's constructor
+    gl_Position = transformation * vec4(aPos, 1.0); // see how we directly give a vec3 to vec4's constructor
     oTexCoords = aTexCoords;
 }
