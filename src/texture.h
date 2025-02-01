@@ -3,6 +3,7 @@
 
 #include <glad/glad.h>
 
+#include <cassert>
 #include <iostream>
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -17,7 +18,7 @@ class Texture2D {
 
  public:
   Texture2D(const char* filePath, int wrapMode = GL_REPEAT,
-            int filterMode = GL_LINEAR, int mipmapFilter = GL_NEAREST) {
+            int filterMode = GL_LINEAR, int mipmapFilter = GL_LINEAR) {
     int _channels{};
     stbi_set_flip_vertically_on_load(true);
     m_data = stbi_load(filePath, &m_width, &m_height, &_channels, 3);
@@ -37,7 +38,7 @@ class Texture2D {
         mipmapFilter = GL_NEAREST_MIPMAP_NEAREST;
         break;
       default:
-       throw std::runtime_error("Invalid filterMode");
+        assert(false && "Inavlid filter mode");
     }
 
     glGenTextures(1, &m_id);
