@@ -1,4 +1,4 @@
-source_files = ['main.cpp', 'glad.c', 'window.h', 'shader.h']
+source_files = ['main.cpp', 'glad.c', 'window.h', 'shader.h', 'texture.h']
 glfw_dep = dependency('glfw3')
 deps = [glfw_dep]
 inc = ['include']
