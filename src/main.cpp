@@ -15,6 +15,9 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void key_callback(GLFWwindow *window, int key, int scancode, int action,
                   int mods);
 
+constexpr int WIDTH{800};
+constexpr int HEIGHT{600};
+
 int main() {
   // clang-format off
   float vertices[] {
@@ -36,7 +39,7 @@ int main() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  Window mainWindow{"Snake", 800, 600};
+  Window mainWindow{"Snake", WIDTH, HEIGHT};
   glfwMakeContextCurrent(mainWindow);
 
   glfwSetFramebufferSizeCallback(mainWindow, framebuffer_size_callback);
@@ -85,7 +88,17 @@ int main() {
   float mix{0.2f};
   shaderProgram.setUFloat("oMix", mix);
 
-  int transfUni{glGetUniformLocation(shaderProgram.id(), "transformation")};
+  int modelMatLoc{glGetUniformLocation(shaderProgram.id(), "modelMat")};
+  int viewMatLoc{glGetUniformLocation(shaderProgram.id(), "viewMat")};
+  int projectionMatLoc{
+      glGetUniformLocation(shaderProgram.id(), "projectionMat")};
+
+  glm::mat4 view{};
+  view = glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -3.f));
+
+  glm::mat4 projection{glm::perspective(
+      glm::radians(60.f), mainWindow.getWidth() / (float)mainWindow.getHeight(),
+      0.1f, 1000.f)};
 
   while (!glfwWindowShouldClose(mainWindow)) {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -93,18 +106,14 @@ int main() {
 
     glBindVertexArray(VAO);
 
-    glm::mat4 transf{glm::mat4(1.f)};
-    transf = glm::translate(transf, glm::vec3(0.5f, -0.5f, 0.f));
-    transf =
-        glm::rotate(transf, (float)glfwGetTime(), glm::vec3(0.f, 0.f, 1.f));
-    glUniformMatrix4fv(transfUni, 1, GL_FALSE, glm::value_ptr(transf));
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glm::mat4 model{glm::mat4(1.f)};
+    model = glm::rotate(model, glm::radians(-55.f), glm::vec3(1.f, 0.f, 0.f));
+    glUniformMatrix4fv(modelMatLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-    transf = glm::mat4(1.f);
-    transf = glm::translate(transf, glm::vec3(-0.5f, 0.5f, 0.f));
-    float scale{(sin((float)glfwGetTime())+1.f) / 2};
-    transf = glm::scale(transf, glm::vec3(scale, scale, 1.f));
-    glUniformMatrix4fv(transfUni, 1, GL_FALSE, glm::value_ptr(transf));
+    glUniformMatrix4fv(viewMatLoc, 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(projectionMatLoc, 1, GL_FALSE,
+                       glm::value_ptr(projection));
+
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     glUniform4f(colorLoc, 1.f, 1.f, 1.f, 1.0f);
