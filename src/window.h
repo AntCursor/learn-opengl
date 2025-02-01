@@ -28,11 +28,6 @@ public:
 
   constexpr GLFWwindow *getWindow() const { return m_window; }
   constexpr operator GLFWwindow *() const { return m_window; }
-
-  void use() {
-    glfwMakeContextCurrent(m_window);
-    glViewport(m_xViewPos, m_yViewPos, m_width, m_height);
-  }
 };
 
 #endif // !WINDOW_LEARNOGL_H

@@ -3,7 +3,7 @@ glfw_dep = dependency('glfw3')
 deps = [glfw_dep]
 inc = ['include']
 cpp_arg = []
-link_arg = []
+link_arg = [ '-lX11', '-lXi', '-lXrandr', '-lpthread', '-lGL', '-ldl' ]
 
 executable(
   'logl',
